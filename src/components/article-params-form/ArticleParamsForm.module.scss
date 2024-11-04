@@ -23,10 +23,21 @@
 	padding: 50px 31px;
 	background-color: #ffffff;
 	border-right: 1px solid #000000;
+
+	& > *:not(:last-child) {
+		margin-bottom: 16px; // Отступы между элементами формы
+	}
 }
 
 .bottomContainer {
 	display: flex;
 	justify-content: space-between;
 	margin-top: auto;
+}
+
+.title {
+	color: #000000;
+	font-weight: 800;
+	font-size: 31px;
+	text-transform: uppercase;
 }

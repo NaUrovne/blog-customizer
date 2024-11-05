@@ -4,7 +4,7 @@ import { Button } from 'src/ui/button';
 import { Select } from 'src/ui/select';
 import { Separator } from 'src/ui/separator';
 import { RadioGroup } from 'src/ui/radio-group';
-//import { useOutsideClickClose } from 'src/ui/select/hooks/useOutsideClickClose';
+import { UseOverlayClickClose } from 'src/ui/select/hooks/UseOverlayClickClose';
 import clsx from 'clsx';
 import styles from './ArticleParamsForm.module.scss';
 
@@ -18,65 +18,38 @@ import {
 	ArticleStateType,
 } from 'src/constants/articleProps';
 
-export const ArticleParamsForm = () => {
+type ArticleParamsFormProps = {
+	currentSettings: ArticleStateType;
+	onApply: (newSettings: ArticleStateType) => void;
+};
+
+export const ArticleParamsForm = ({
+	currentSettings,
+	onApply,
+}: ArticleParamsFormProps) => {
+	const [localSettings, setLocalSettings] =
+		useState<ArticleStateType>(currentSettings);
 	const [isOpen, setIsOpen] = useState(false);
-	const [settings, setSettings] =
-		useState<ArticleStateType>(defaultArticleState);
 	const sidebarRef = useRef<HTMLDivElement>(null);
+
+	UseOverlayClickClose({
+		isOpen,
+		rootRef: sidebarRef,
+		onChange: setIsOpen,
+	});
 
 	const handleToggle = () => {
 		setIsOpen((prev) => !prev);
 	};
 
-	// Не открывается сайдбар при использовании данного хука, не разобрался что не так и как реализовать закрытие сайдбара используя его
-	//    useOutsideClickClose({
-	//     isOpen,
-	//     rootRef: sidebarRef,
-	//     onChange: setIsOpen,
-	//     onClose: () => setIsOpen(false),
-	//   });
-
-	const handleApply = (e: React.FormEvent) => {
+	const handleApply = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const rootElement = document.querySelector('main') as HTMLElement;
-
-		rootElement.style.setProperty(
-			'--font-family',
-			settings.fontFamilyOption.value
-		);
-		rootElement.style.setProperty('--font-size', settings.fontSizeOption.value);
-		rootElement.style.setProperty('--font-color', settings.fontColor.value);
-		rootElement.style.setProperty('--bg-color', settings.backgroundColor.value);
-		rootElement.style.setProperty(
-			'--container-width',
-			settings.contentWidth.value
-		);
+		onApply(localSettings);
 	};
 
 	const handleReset = () => {
-		setSettings(defaultArticleState);
-
-		const rootElement = document.querySelector('main') as HTMLElement;
-		rootElement.style.setProperty(
-			'--font-family',
-			defaultArticleState.fontFamilyOption.value
-		);
-		rootElement.style.setProperty(
-			'--font-size',
-			defaultArticleState.fontSizeOption.value
-		);
-		rootElement.style.setProperty(
-			'--font-color',
-			defaultArticleState.fontColor.value
-		);
-		rootElement.style.setProperty(
-			'--bg-color',
-			defaultArticleState.backgroundColor.value
-		);
-		rootElement.style.setProperty(
-			'--container-width',
-			defaultArticleState.contentWidth.value
-		);
+		setLocalSettings(defaultArticleState);
+		onApply(defaultArticleState);
 	};
 
 	return (
@@ -90,48 +63,44 @@ export const ArticleParamsForm = () => {
 					<Select
 						title='Шрифт'
 						options={fontFamilyOptions}
-						selected={settings.fontFamilyOption}
+						selected={localSettings.fontFamilyOption}
 						onChange={(option) =>
-							setSettings({ ...settings, fontFamilyOption: option })
+							setLocalSettings({ ...localSettings, fontFamilyOption: option })
 						}
-						placeholder='Выберите шрифт'
 					/>
 					<RadioGroup
 						name='fontSize'
 						title='Размер шрифта'
 						options={fontSizeOptions}
-						selected={settings.fontSizeOption}
+						selected={localSettings.fontSizeOption}
 						onChange={(option) =>
-							setSettings({ ...settings, fontSizeOption: option })
+							setLocalSettings({ ...localSettings, fontSizeOption: option })
 						}
 					/>
 					<Select
 						title='Цвет шрифта'
 						options={fontColors}
-						selected={settings.fontColor}
+						selected={localSettings.fontColor}
 						onChange={(option) =>
-							setSettings({ ...settings, fontColor: option })
+							setLocalSettings({ ...localSettings, fontColor: option })
 						}
-						placeholder='Выберите цвет шрифта'
 					/>
 					<Separator />
 					<Select
 						title='Цвет фона'
 						options={backgroundColors}
-						selected={settings.backgroundColor}
+						selected={localSettings.backgroundColor}
 						onChange={(option) =>
-							setSettings({ ...settings, backgroundColor: option })
+							setLocalSettings({ ...localSettings, backgroundColor: option })
 						}
-						placeholder='Выберите цвет фона'
 					/>
 					<Select
 						title='Ширина контента'
 						options={contentWidthArr}
-						selected={settings.contentWidth}
+						selected={localSettings.contentWidth}
 						onChange={(option) =>
-							setSettings({ ...settings, contentWidth: option })
+							setLocalSettings({ ...localSettings, contentWidth: option })
 						}
-						placeholder='Выберите ширину контента'
 					/>
 					<div className={styles.bottomContainer}>
 						<Button

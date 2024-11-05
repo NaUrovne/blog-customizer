@@ -25,7 +25,11 @@
 	border-right: 1px solid #000000;
 
 	& > *:not(:last-child) {
-		margin-bottom: 16px; // Отступы между элементами формы
+		margin-bottom: 50px; // Отступы между элементами формы
+	}
+
+	& > *:last-child {
+		margin-top: 62px; // отступ последнего элемента (до состояния прокрута)
 	}
 }
 

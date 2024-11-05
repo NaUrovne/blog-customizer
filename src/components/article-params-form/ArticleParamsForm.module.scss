@@ -23,10 +23,25 @@
 	padding: 50px 31px;
 	background-color: #ffffff;
 	border-right: 1px solid #000000;
+
+	& > *:not(:last-child) {
+		margin-bottom: 50px; // Отступы между элементами формы
+	}
+
+	& > *:last-child {
+		margin-top: 62px; // отступ последнего элемента (до состояния прокрута)
+	}
 }
 
 .bottomContainer {
 	display: flex;
 	justify-content: space-between;
 	margin-top: auto;
+}
+
+.title {
+	font-weight: 800;
+	font-size: 31px;
+	font-family: 'Open Sans', sans-serif;
+	text-transform: uppercase;
 }
